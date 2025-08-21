@@ -391,23 +391,24 @@
                 margin-bottom: 20px;
                 position: relative;
             }
-            .marquee-text {
-                display: inline-block;
-                white-space: nowrap;
-                font-family: 'Playfair Display', serif;
-                font-size: 1.5em;
-                font-weight: 700;
-                color: #222;
-                text-shadow: 1px 1px 6px rgba(255,255,255,0.18);
-                letter-spacing: 2px;
-                padding: 16px 0;
-                text-shadow: 2px 2px 8px rgba(0,0,0,0.18);
-                animation: marquee-left 18s linear infinite;
-            }
-            @keyframes marquee-left {
-                0% { transform: translateX(100%); }
-                100% { transform: translateX(-100%); }
-            }
+                .announcement-marquee {
+                    display: inline-block;
+                    white-space: nowrap;
+                    font-family: 'Playfair Display', serif;
+                    font-size: 1.5em;
+                    font-weight: 700;
+                    color: #222;
+                    text-shadow: 2px 2px 8px rgba(0,0,0,0.18);
+                    letter-spacing: 2px;
+                    padding: 16px 0;
+                    position: relative;
+                    will-change: transform;
+                    left: 0;
+                    transition: none;
+                }
+                .announcement-text {
+                    display: inline;
+                }
         </style>
 </head>
 <body>
@@ -416,7 +417,9 @@
         <p>Découvrez la passion de la danse à Sannois</p>
 
         <div class="marquee-container">
-                        <span class="marquee-text">Samedi 06 septembre 2025 &nbsp; de 10h à 18h au stade Auguste Delaune &mdash; Journée des Associations !</span>
+                <span class="announcement-marquee">
+                    <span class="announcement-text">Samedi 06 septembre 2025 &nbsp; de 10h à 18h au stade Auguste Delaune &mdash; Journée des Associations !</span>
+                </span>
                     </div>
     </header>
 
@@ -534,5 +537,60 @@
     <footer>
         <p>© 2025 Plaisir de Danser - Tous droits réservés.</p>
     </footer>
+    </body>
+    <script>
+    // JS Marquee logic adapted from provided function
+    document.addEventListener('DOMContentLoaded', function() {
+        function setupMarqueeLogic(document) {
+            const marquee = document.querySelector('.announcement-marquee');
+            if (!marquee) return;
+            const container = marquee.parentElement;
+            let reqId;
+            let speed = 100; // pixels per second
+            document.announcement_text_marquee_paused = false;
+            let startOffset = 0.5;
+
+            function getWidths() {
+                const textNode = marquee.querySelector('.announcement-text');
+                return {
+                    container: container.offsetWidth,
+                    text: textNode ? textNode.offsetWidth : marquee.offsetWidth
+                };
+            }
+
+            function animateMarquee() {
+                let { container: containerW, text: textW } = getWidths();
+                let x = containerW * startOffset;
+                const textNode = marquee.querySelector('.announcement-text');
+                function step() {
+                    if (document.announcement_text_marquee_paused !== true) {
+                        containerW = getWidths().container;
+                        x -= speed / 60; // 60fps
+                        const bounding_rect = textNode.getBoundingClientRect();
+                        if (bounding_rect.right < 0) {
+                            x = containerW;
+                        }
+                        marquee.style.transform = `translateX(${x}px)`;
+                    }
+                    reqId = requestAnimationFrame(step);
+                }
+                reqId = requestAnimationFrame(step);
+            }
+
+            function start() {
+                marquee.style.willChange = 'transform';
+                marquee.style.position = 'relative';
+                marquee.style.left = '0';
+                marquee.style.transform = `translateX(${container.offsetWidth * startOffset}px)`;
+                animateMarquee();
+            }
+
+            marquee.addEventListener('mouseenter', function() { document.announcement_text_marquee_paused = true; });
+            marquee.addEventListener('mouseleave', function() { document.announcement_text_marquee_paused = false; });
+            start();
+        }
+        setupMarqueeLogic(document);
+    });
+    </script>
 </body>
 </html>
