@@ -1,0 +1,16 @@
+[project]
+name = "inline-documents"
+version = "0.1.0"
+description = "Inline the tarifs PDF and inscription markdown into index.html."
+requires-python = ">=3.9"
+dependencies = []
+
+[project.scripts]
+inline-documents = "inline_documents:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["inline_documents"]
