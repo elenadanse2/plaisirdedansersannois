@@ -66,6 +66,7 @@
             border-radius: 12px;
             margin-top: -30px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            overflow-x: hidden;
         }
         .intro h2 {
             font-size: 2.5em;
@@ -738,6 +739,187 @@
         height: auto;
         display: block;
     }
+
+    /* Intro highlight gallery */
+    .highlights-gallery {
+        --highlight-gap: 14px;
+        width: min(100%, 920px);
+        margin: 28px auto 8px;
+        padding: 0;
+        position: relative;
+    }
+    .highlights-viewport {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+    }
+    .highlights-track {
+        display: flex;
+        gap: var(--highlight-gap);
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scroll-padding-inline: 8px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        list-style: none;
+        margin: 0;
+        padding: 10px 4px 16px;
+        touch-action: pan-x;
+        min-width: 0;
+    }
+    .highlights-track::-webkit-scrollbar {
+        display: none;
+    }
+    .highlights-item {
+        flex: 0 0 auto;
+        width: clamp(138px, 17.5vw, 188px);
+        scroll-snap-align: start;
+        opacity: 0.78;
+        transform: scale(0.97);
+        transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    .highlights-item.is-active {
+        opacity: 1;
+        transform: scale(1);
+    }
+    .highlights-item .dance-video-container {
+        position: relative;
+        margin: 0;
+        max-width: none;
+        width: 100%;
+        aspect-ratio: 268 / 476;
+        background: #1a2430;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.28);
+    }
+    .highlights-item .dance-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        pointer-events: none;
+    }
+    .highlights-nav {
+        flex: 0 0 auto;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.94);
+        color: #2e4057;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+    }
+    .highlights-nav svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+    }
+    .highlights-nav:hover,
+    .highlights-nav:focus-visible {
+        background: #fff;
+        transform: scale(1.06);
+    }
+    .highlights-nav:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+    }
+    .highlights-nav:disabled {
+        opacity: 0.35;
+        cursor: default;
+        transform: none;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+    .highlights-dots {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 4px;
+        padding: 0 8px;
+    }
+    .highlights-dot {
+        width: 8px;
+        height: 8px;
+        padding: 0;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.42);
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+        transition: transform 0.2s ease, background 0.2s ease, width 0.2s ease;
+    }
+    .highlights-dot[aria-current="true"] {
+        background: #fff;
+        width: 22px;
+        border-radius: 999px;
+    }
+    .highlights-dot:focus-visible {
+        outline: 2px solid #fff;
+        outline-offset: 3px;
+    }
+    .intro .reserve-btn {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    @media (max-width: 768px) {
+        .highlights-gallery {
+            --highlight-gap: 12px;
+            margin: 22px auto 4px;
+        }
+        .highlights-viewport {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 0;
+        }
+        .highlights-nav {
+            display: none;
+        }
+        .highlights-item {
+            width: min(44vw, 196px);
+        }
+        .intro .reserve-btn {
+            font-size: 1.28em;
+            padding: 14px 22px;
+            width: min(100%, 28rem);
+        }
+    }
+    @media (max-width: 480px) {
+        .highlights-item {
+            width: clamp(140px, 42vw, 168px);
+        }
+        .highlights-track {
+            scroll-padding-inline: 8px;
+            padding-left: 2px;
+            padding-right: 20px;
+        }
+        .intro .reserve-btn {
+            font-size: 1.12em;
+            padding: 13px 16px;
+            border-radius: 12px;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .highlights-item,
+        .highlights-nav,
+        .highlights-dot {
+            transition: none;
+        }
+        .highlights-item {
+            transform: none;
+        }
+        .highlights-track {
+            scroll-behavior: auto;
+        }
+    }
     
     </style>
         <style>
@@ -790,6 +972,88 @@
                 <p>
                     Notre association offre des cours de danse adaptés à tous
                 </p>
+            </div>
+            <div class="highlights-gallery" role="region" aria-roledescription="carrousel" aria-label="Extraits vidéo de nos cours de danse">
+                <div class="highlights-viewport">
+                    <button type="button" class="highlights-nav highlights-nav--prev" aria-label="Extraits précédents" disabled>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 5l-7 7 7 7"/>
+                        </svg>
+                    </button>
+                    <ul class="highlights-track" tabindex="0">
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="auto" width="268" height="476" aria-label="Extrait de cours de danse 1">
+                                    <source src="publication_highlights/highlight_01.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="auto" width="268" height="476" aria-label="Extrait de cours de danse 2">
+                                    <source src="publication_highlights/highlight_02.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 3">
+                                    <source src="publication_highlights/highlight_03.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 4">
+                                    <source src="publication_highlights/highlight_04.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 5">
+                                    <source src="publication_highlights/highlight_05.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 6">
+                                    <source src="publication_highlights/highlight_06.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 7">
+                                    <source src="publication_highlights/highlight_07.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                        <li class="highlights-item">
+                            <div class="dance-video-container">
+                                <video class="dance-video" muted playsinline loop preload="metadata" width="268" height="476" aria-label="Extrait de cours de danse 8">
+                                    <source src="publication_highlights/highlight_08.mp4" type="video/mp4">
+                                </video>
+                            </div>
+                        </li>
+                    </ul>
+                    <button type="button" class="highlights-nav highlights-nav--next" aria-label="Extraits suivants">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="highlights-dots" role="group" aria-label="Choisir un extrait">
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 1" aria-current="true"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 2"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 3"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 4"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 5"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 6"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 7"></button>
+                    <button type="button" class="highlights-dot" aria-label="Afficher l’extrait 8"></button>
+                </div>
             </div>
             <a href="https://wa.me/33677851362" target="_blank" class="reserve-btn">Réservez Votre Cours de Danse</a>
         </section>
@@ -1073,9 +1337,167 @@ JVBERi0xLjcKJafj8fEKMiAwIG9iago8PAovUGFnZXMgNCAwIFIKL1R5cGUgL0NhdGFsb2cKL0Fjcm9G
             start();
         }
         setupMarqueeLogic(document);
+        setupHighlightsGallery();
         setupTarifsModal();
         setupInscriptionModal();
     });
+
+    function setupHighlightsGallery() {
+        const root = document.querySelector('.highlights-gallery');
+        if (!root) return;
+
+        const track = root.querySelector('.highlights-track');
+        const items = Array.prototype.slice.call(root.querySelectorAll('.highlights-item'));
+        const videos = Array.prototype.slice.call(root.querySelectorAll('.highlights-item .dance-video'));
+        const prevBtn = root.querySelector('.highlights-nav--prev');
+        const nextBtn = root.querySelector('.highlights-nav--next');
+        const dots = Array.prototype.slice.call(root.querySelectorAll('.highlights-dot'));
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const visible = new Array(items.length).fill(false);
+        let activeIndex = 0;
+        let ticking = false;
+
+        function stepSize() {
+            const item = items[0];
+            if (!item) return track.clientWidth;
+            const styles = window.getComputedStyle(track);
+            const gap = parseFloat(styles.columnGap || styles.gap) || 14;
+            return item.getBoundingClientRect().width + gap;
+        }
+
+        function scrollToIndex(index, smooth) {
+            const item = items[index];
+            if (!item) return;
+            const trackRect = track.getBoundingClientRect();
+            const itemRect = item.getBoundingClientRect();
+            const delta = (itemRect.left + itemRect.width / 2) - (trackRect.left + trackRect.width / 2);
+            track.scrollBy({
+                left: delta,
+                behavior: reduceMotion || smooth === false ? 'auto' : 'smooth'
+            });
+        }
+
+        function nearestIndex() {
+            const trackRect = track.getBoundingClientRect();
+            let best = 0;
+            let bestDist = Infinity;
+            items.forEach(function(item, index) {
+                if (!visible[index] && bestDist !== Infinity) return;
+                const rect = item.getBoundingClientRect();
+                const dist = Math.abs(rect.left - trackRect.left);
+                if ((visible[index] || bestDist === Infinity) && dist < bestDist) {
+                    bestDist = dist;
+                    best = index;
+                }
+            });
+            return best;
+        }
+
+        function syncPlayback() {
+            videos.forEach(function(video, index) {
+                if (reduceMotion) {
+                    video.pause();
+                    return;
+                }
+                if (visible[index]) {
+                    const playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(function() {});
+                    }
+                } else {
+                    video.pause();
+                }
+            });
+        }
+
+        function updateUi() {
+            const maxScroll = track.scrollWidth - track.clientWidth - 2;
+            if (prevBtn) prevBtn.disabled = track.scrollLeft <= 2;
+            if (nextBtn) nextBtn.disabled = track.scrollLeft >= maxScroll;
+            activeIndex = nearestIndex();
+            items.forEach(function(item, index) {
+                item.classList.toggle('is-active', visible[index]);
+            });
+            dots.forEach(function(dot, index) {
+                if (index === activeIndex) {
+                    dot.setAttribute('aria-current', 'true');
+                } else {
+                    dot.removeAttribute('aria-current');
+                }
+            });
+            syncPlayback();
+        }
+
+        function requestUpdate() {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(function() {
+                ticking = false;
+                updateUi();
+            });
+        }
+
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    const index = items.indexOf(entry.target);
+                    if (index === -1) return;
+                    visible[index] = entry.isIntersecting && entry.intersectionRatio >= 0.55;
+                });
+                requestUpdate();
+            }, {
+                root: track,
+                threshold: [0, 0.55, 0.9]
+            });
+            items.forEach(function(item) {
+                observer.observe(item);
+            });
+        } else {
+            items.forEach(function(_, index) {
+                visible[index] = index < 4;
+            });
+        }
+
+        videos.forEach(function(video) {
+            video.muted = true;
+            video.playsInline = true;
+            video.addEventListener('loadeddata', requestUpdate);
+        });
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', function() {
+                track.scrollBy({
+                    left: -stepSize(),
+                    behavior: reduceMotion ? 'auto' : 'smooth'
+                });
+            });
+        }
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function() {
+                track.scrollBy({
+                    left: stepSize(),
+                    behavior: reduceMotion ? 'auto' : 'smooth'
+                });
+            });
+        }
+        dots.forEach(function(dot, index) {
+            dot.addEventListener('click', function() {
+                scrollToIndex(index);
+            });
+        });
+        track.addEventListener('scroll', requestUpdate, { passive: true });
+        track.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                scrollToIndex(Math.max(0, nearestIndex() - 1));
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                scrollToIndex(Math.min(items.length - 1, nearestIndex() + 1));
+            }
+        });
+        window.addEventListener('resize', requestUpdate);
+        updateUi();
+    }
 
     var openDialogCount = 0;
 
