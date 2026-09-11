@@ -66,7 +66,6 @@
             border-radius: 12px;
             margin-top: -30px;
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-            overflow-x: hidden;
         }
         .intro h2 {
             font-size: 2.5em;
@@ -747,6 +746,7 @@
         margin: 28px auto 8px;
         padding: 0;
         position: relative;
+        overflow-x: clip;
     }
     .highlights-viewport {
         position: relative;
@@ -760,6 +760,8 @@
         display: flex;
         gap: var(--highlight-gap);
         overflow-x: auto;
+        overflow-y: hidden;
+        overflow-y: clip;
         overscroll-behavior-x: contain;
         scroll-snap-type: x mandatory;
         scroll-padding-inline: 8px;
@@ -768,7 +770,7 @@
         list-style: none;
         margin: 0;
         padding: 10px 4px 16px;
-        touch-action: pan-x;
+        touch-action: pan-x pan-y;
         min-width: 0;
     }
     .highlights-track::-webkit-scrollbar {
@@ -1485,6 +1487,56 @@ JVBERi0xLjcKJafj8fEKMiAwIG9iago8PAovUGFnZXMgNCAwIFIKL1R5cGUgL0NhdGFsb2cKL0Fjcm9G
                 scrollToIndex(index);
             });
         });
+
+        function bindGalleryPageScroll() {
+            var startX = 0;
+            var startY = 0;
+            var lastY = 0;
+            var axis = null;
+            var active = false;
+            var threshold = 8;
+
+            function resetGesture() {
+                axis = null;
+                active = false;
+            }
+
+            track.addEventListener('touchstart', function(event) {
+                if (!event.touches || event.touches.length !== 1) {
+                    resetGesture();
+                    return;
+                }
+                var touch = event.touches[0];
+                startX = touch.clientX;
+                startY = touch.clientY;
+                lastY = touch.clientY;
+                axis = null;
+                active = true;
+            }, { passive: true });
+
+            track.addEventListener('touchmove', function(event) {
+                if (!active || !event.touches || event.touches.length !== 1) return;
+                var touch = event.touches[0];
+                var dx = touch.clientX - startX;
+                var dy = touch.clientY - startY;
+
+                if (axis === null) {
+                    if (Math.abs(dx) < threshold && Math.abs(dy) < threshold) return;
+                    axis = Math.abs(dy) > Math.abs(dx) ? 'y' : 'x';
+                }
+
+                if (axis === 'y') {
+                    event.preventDefault();
+                    window.scrollBy(0, lastY - touch.clientY);
+                }
+                lastY = touch.clientY;
+            }, { passive: false });
+
+            track.addEventListener('touchend', resetGesture, { passive: true });
+            track.addEventListener('touchcancel', resetGesture, { passive: true });
+        }
+
+        bindGalleryPageScroll();
         track.addEventListener('scroll', requestUpdate, { passive: true });
         track.addEventListener('keydown', function(event) {
             if (event.key === 'ArrowLeft') {
